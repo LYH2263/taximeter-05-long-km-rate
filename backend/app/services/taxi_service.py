@@ -1,6 +1,7 @@
 from app.db import connect
 from app.engines.night_compare import compare_day_night
 from app.engines.tariff_breakdown import calc_fare
+from app.modules import long_km_rate
 from app.repositories import runs, settings, tariff, trips
 
 class TaxiService:
@@ -15,14 +16,21 @@ class TaxiService:
     def history(self, limit=50): return runs.list_recent(self._c, limit)
     def fare(self, distance_km, slow_min, night, trip_id, persist):
         t = tariff.get_active(self._c)
-        r = calc_fare(distance_km, slow_min, night, t)
+        lr = long_km_rate.get_active(self._c)
+        r = calc_fare(distance_km, slow_min, night, t, lr)
         rid = runs.insert(self._c, "fare", {"distance_km": distance_km, "slow_min": slow_min, "night": night}, r, trip_id) if persist else None
         return {"run_id": rid, **r}
     def compare(self, distance_km, slow_min, persist):
         t = tariff.get_active(self._c)
-        r = compare_day_night(distance_km, slow_min, t)
+        lr = long_km_rate.get_active(self._c)
+        r = compare_day_night(distance_km, slow_min, t, lr)
         rid = runs.insert(self._c, "compare", {"distance_km": distance_km, "slow_min": slow_min}, r, None) if persist else None
         return {"run_id": rid, **r}
+    def long_km_rates(self): return long_km_rate.list_rules(self._c)
+    def create_long_km_rate(self, start_km, per_km): return long_km_rate.create_rule(self._c, start_km, per_km)
+    def update_long_km_rate(self, rule_id, start_km, per_km, active):
+        return long_km_rate.update_rule(self._c, rule_id, start_km, per_km, active)
+    def deactivate_long_km_rate(self, rule_id): return long_km_rate.deactivate(self._c, rule_id)
     def dashboard(self):
         items = trips.list_all(self._c)
         clean = [x for x in items if "种子" not in x["label"]]

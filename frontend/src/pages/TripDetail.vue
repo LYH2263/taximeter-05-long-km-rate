@@ -14,6 +14,6 @@ onMounted(load); watch(() => route.params.id, load)
 <template>
   <div class="page" v-if="trip"><h1>{{ trip.label }}</h1>
     <p class="hero-num">¥{{ fare?.total }}</p>
-    <p>起步 {{ fare?.start }} · 里程 {{ fare?.mileage }} · 低速 {{ fare?.slow_fee }}</p>
+    <p>起步 {{ fare?.start }} · 里程 {{ fare?.mileage }} · 远程 {{ fare?.long_mileage }} · 低速 {{ fare?.slow_fee }}</p>
   </div>
 </template>
