@@ -1,1 +1,1 @@
-"""0-1 module stubs; not wired in base."""
+"""可选业务模块。long_km_rate 已落库并接入计费；其余仍为 0-1 空桩。"""

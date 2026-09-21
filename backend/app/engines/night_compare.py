@@ -1,9 +1,9 @@
 from app.engines.tariff_breakdown import calc_fare
 
 
-def compare_day_night(distance_km: float, slow_min: float, tariff: dict) -> dict:
-    day = calc_fare(distance_km, slow_min, False, tariff)
-    night = calc_fare(distance_km, slow_min, True, tariff)
+def compare_day_night(distance_km: float, slow_min: float, tariff: dict, long_km: dict | None = None) -> dict:
+    day = calc_fare(distance_km, slow_min, False, tariff, long_km)
+    night = calc_fare(distance_km, slow_min, True, tariff, long_km)
     return {
         "distance_km": day["distance_km"],
         "slow_min": day["slow_min"],
